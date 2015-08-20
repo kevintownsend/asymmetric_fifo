@@ -26,7 +26,7 @@ module asymmetric_fifo(rst, clk, push, pop, d, q, full, empty, count, almost_emp
     reg [DEPTH_IN_ADDR_WIDTH:0] r_beg;
 
     //reg [WIDTH-1:0] ram [DEPTH-1:0];
-    asymmetric_distributed_ram ram(clk, push, r_beg[DEPTH_IN_ADDR_WIDTH-1:0], d, r_end[DEPTH_OUT_ADDR_WIDTH-1:0], q); //TODO: complete
+    asymmetric_distributed_ram #(WIDTH_IN, WIDTH_OUT, DEPTH_IN) ram(clk, push, r_beg[DEPTH_IN_ADDR_WIDTH-1:0], d, r_end[DEPTH_OUT_ADDR_WIDTH-1:0], q); //TODO: complete
     always @(posedge clk) begin
         if(rst) begin
             r_end <= 0;
