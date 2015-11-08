@@ -26,7 +26,7 @@ module asymmetric_fifo(rst, clk, push, pop, d, q, full, empty, count, almost_emp
     reg [DEPTH_IN_ADDR_WIDTH:0] r_beg;
 
     //reg [WIDTH-1:0] ram [DEPTH-1:0];
-    asymmetric_distributed_ram #(WIDTH_IN, WIDTH_OUT, DEPTH_IN) ram(clk, push, r_beg[DEPTH_IN_ADDR_WIDTH-1:0], d, r_end[DEPTH_OUT_ADDR_WIDTH-1:0], q); //TODO: complete
+    asymmetric_distributed_ram #(WIDTH_IN, WIDTH_OUT, DEPTH_IN) ram(clk, push, r_beg[DEPTH_IN_ADDR_WIDTH-1:0], d, r_end[DEPTH_OUT_ADDR_WIDTH-1:0], q);
     always @(posedge clk) begin
         if(rst) begin
             r_end <= 0;
@@ -44,16 +44,18 @@ module asymmetric_fifo(rst, clk, push, pop, d, q, full, empty, count, almost_emp
     assign almost_empty = (count < (1+ALMOST_EMPTY_COUNT));
     assign almost_full = (count > (DEPTH_IN-1-ALMOST_FULL_COUNT) * RATIO);
 
+    // synthesis translate_off
     always @(posedge clk) begin
         if(full && push) begin
-            $display("ERROR: %d Overflow at %m", $time);
-            $finish;
+            $display("@verilog ERROR: %d Overflow at %m, rst: %d", $time, rst);
+            //$finish;
         end
         if(empty && pop) begin
-            $display("ERROR: %d underflow at %m", $time);
-            $finish;
+            $display("@verilog ERROR: %d underflow at %m", $time);
+            //$finish;
         end
     end
+    // synthesis translate_on
 
     `include "log2.vh"
 endmodule
